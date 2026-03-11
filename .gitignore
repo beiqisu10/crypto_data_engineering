@@ -15,6 +15,7 @@ venv/
 airflow/logs/
 airflow/unittests.cfg
 airflow/airflow.db
+airflow/.env
 
 # --- Terraform ---
 .terraform/

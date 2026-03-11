@@ -6,10 +6,8 @@ name: crypto-data-pipeline
 services:
   postgres:
     image: postgres:13
-    environment:
-      - POSTGRES_USER=airflow
-      - POSTGRES_PASSWORD=airflow
-      - POSTGRES_DB=airflow
+    env_file:
+      - .env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U airflow"]
       interval: 10s
@@ -22,12 +20,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
       - LOAD_EX=n
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-      - AIRFLOW__CORE__FERNET_KEY=REMOVED_KEY
-      - AIRFLOW__WEBSERVER__SECRET_KEY=REMOVED_KEY
       - AIRFLOW__CORE__TEST_CONNECTION=Enabled
       - AIRFLOW__LOGGING__REMOTE_LOGGING=False
       - AIRFLOW__WEBSERVER__LOG_FETCH_TIMEOUT_SEC=15
@@ -55,11 +52,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-      - AIRFLOW__CORE__FERNET_KEY=REMOVED_KEY
-      - AIRFLOW__WEBSERVER__SECRET_KEY=REMOVED_KEY
       - GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/gcp_keys.json
       - AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT=google-cloud-platform://?key_path=/opt/airflow/gcp_keys.json&project=project-64505
     volumes:
