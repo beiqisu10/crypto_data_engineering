@@ -1,0 +1,33 @@
+# --- Security & Credentials ---
+*.json
+*.key
+*.pem
+credentials/
+secrets/
+.env
+
+# --- Python & Airflow ---
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+airflow/logs/
+airflow/unittests.cfg
+airflow/airflow.db
+
+# --- Terraform ---
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# --- dbt ---
+dbt_crypto/target/
+dbt_crypto/dbt_packages/
+dbt_crypto/logs/
+
+# --- Local Data & OS ---
+scripts/data/
+tmp/
+.DS_Store

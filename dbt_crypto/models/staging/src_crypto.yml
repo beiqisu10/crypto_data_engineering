@@ -1,0 +1,37 @@
+version: 2
+
+sources:
+  - name: binance_source
+    database: project-64505
+    schema: binance_data
+    description: "Raw cryptocurrency market data ingested from Binance API, CoinGecko, and Alternative.me (Fear & Greed Index)."
+    tables:
+      - name: BTCUSDT
+        description: "Real-time spot price and trade execution data for the BTC/USDT trading pair."
+        columns:
+          - name: event_time
+            description: "The UTC timestamp representing when the trade event occurred on the exchange."
+          - name: price
+            description: "The execution price of the trade in USDT."
+          - name: quantity
+            description: "The amount of Bitcoin (BTC) transacted in this specific trade."
+          - name: is_buyer_maker
+            description: "Boolean flag. If true, the buyer was the liquidity maker (limit order), indicating a sell-side market hit."
+
+      - name: market_prices
+        description: "Historical OHLCV or daily snapshot prices and volume data for multiple crypto assets."
+        columns:
+          - name: timestamp
+            description: "The UTC timestamp or date for the recorded price snapshot."
+          - name: price
+            description: "The closing or spot price of the asset at the given timestamp in USD/USDT."
+
+      - name: market_sentiment
+        description: "Daily Cryptocurrency Fear & Greed Index values representing market psychology and investor sentiment."
+        columns:
+          - name: timestamp
+            description: "The UTC timestamp when the sentiment index was calculated and published."
+          - name: value
+            description: "The index value ranging from 0 (Extreme Fear) to 100 (Extreme Greed)."
+          - name: value_classification
+            description: "The textual interpretation of the index score (e.g., 'Extreme Fear', 'Fear', 'Neutral', 'Greed', 'Extreme Greed')."

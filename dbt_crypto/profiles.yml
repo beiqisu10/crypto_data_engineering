@@ -1,0 +1,14 @@
+dbt_crypto:
+  outputs:
+    dev:
+      dataset: dbt_analytics
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile: /opt/airflow/gcp_keys.json
+      location: US
+      method: service-account
+      priority: interactive
+      project: project-64505
+      threads: 4
+      type: bigquery
+  target: dev

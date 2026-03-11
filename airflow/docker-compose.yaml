@@ -1,0 +1,70 @@
+version: '3.8'
+
+# Set a unique project name to avoid conflicts with other Airflow instances
+name: crypto-data-pipeline
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  airflow-webserver:
+    build: .
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - LOAD_EX=n
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__FERNET_KEY=VJLYTkZ_pRl_WjVcagx2cFaRlGUCExSeJ7_qbdCuOwk=
+      - AIRFLOW__WEBSERVER__SECRET_KEY=78684c5b1ae9a28b2a66eab07049139d240c4fc48e42dd5f3a606b1f6ef1
+      - AIRFLOW__CORE__TEST_CONNECTION=Enabled
+      - AIRFLOW__LOGGING__REMOTE_LOGGING=False
+      - AIRFLOW__WEBSERVER__LOG_FETCH_TIMEOUT_SEC=15
+      # Environment variable for Google Cloud credentials inside the container
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/gcp_keys.json
+      - AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT=google-cloud-platform://?key_path=/opt/airflow/gcp_keys.json&project=project-64505
+    volumes:
+      # Mount DAGs for orchestration
+      - ./dags:/opt/airflow/dags
+      # Mount external scripts directory for Spark jobs
+      - ../scripts:/opt/airflow/scripts
+      # Map host GCP credentials to the container (read-only)
+      - ~/.google/credentials/google_credentials.json:/opt/airflow/gcp_keys.json:ro
+      - ../dbt_crypto:/opt/airflow/dbt_crypto
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "airflow db migrate && 
+               airflow users create --username airflow --password airflow --firstname Admin --lastname Admin --role Admin --email admin@example.com || true && 
+               airflow webserver"
+
+  airflow-scheduler:
+    build: .
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__FERNET_KEY=VJLYTkZ_pRl_WjVcagx2cFaRlGUCExSeJ7_qbdCuOwk=
+      - AIRFLOW__WEBSERVER__SECRET_KEY=78684c5b1ae9a28b2a66eab07049139d240c4fc48e42dd5f3a606b1f6ef1
+      - GOOGLE_APPLICATION_CREDENTIALS=/opt/airflow/gcp_keys.json
+      - AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT=google-cloud-platform://?key_path=/opt/airflow/gcp_keys.json&project=project-64505
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ../scripts:/opt/airflow/scripts
+      - ~/.google/credentials/google_credentials.json:/opt/airflow/gcp_keys.json:ro
+      - ../dbt_crypto:/opt/airflow/dbt_crypto
+    command: scheduler

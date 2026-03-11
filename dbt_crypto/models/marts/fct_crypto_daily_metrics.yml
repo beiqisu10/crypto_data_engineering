@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: fct_crypto_daily_metrics
+    description: "The final fact table combining Binance prices and Fear & Greed sentiment data."
+    columns:
+      - name: date_day
+        description: "The primary key for this table (one record per day)."
+        tests:
+          - unique
+          - not_null
+
+      - name: sentiment_score
+        description: "The daily Fear and Greed score (0-100)."
+        tests:
+          - not_null
+
+      - name: closing_price
+        description: "The closing price of BTC/USDT at 00:00 UTC."
