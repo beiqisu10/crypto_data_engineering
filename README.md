@@ -63,7 +63,7 @@ The following commands handle the entire lifecycle of the pipeline:
 | `make dev-up` | Spin up the local Airflow environment via Docker Compose. |
 | `make dbt-build` | Install dbt dependencies, run all models, and execute data tests. |
 | `make full-deploy` | **One-click execution**: Runs infra setup, starts Airflow, and triggers dbt. |
-|
+
 
 **Step-by-Step Manual Execution**
 
