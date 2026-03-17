@@ -16,10 +16,12 @@ resource "google_bigquery_dataset" "binance_dataset" {
   dataset_id = "binance_data"
   location   = var.location
   description = "Raw data from Binance, CoinGecko and Fear&Greed API"
+  delete_contents_on_destroy  = true
 }
 
 resource "google_bigquery_dataset" "dbt_dataset" {
   dataset_id = "dbt_analytics"
   location   = var.location
   description = "Transformed crypto market models managed by dbt"
+  delete_contents_on_destroy  = true
 }

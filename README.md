@@ -53,15 +53,14 @@ This project uses a Makefile to encapsulate complex commands, ensuring consisten
 * **Docker & Docker-compose**: For the Airflow orchestration layer.
 * **Terraform**: For infrastructure as code.
 
-**🚀Quick Start (Automated Workflow)**
+**🚀Quick Start (Automated Environment Setup)**
 
-The following commands handle the entire lifecycle of the pipeline:
+The following command provisions the cloud resources and starts the Airflow environment:
 
 ```bash
-make full-deploy
+make setup
 ```
-It will run infra setup, starts Airflow, and triggers dbt. 
-
+*This handles Infrastructure (Terraform) and Orchestration (Docker/Airflow) in one go.*
 
 **🔧Step-by-Step Manual Execution**
 
@@ -72,14 +71,14 @@ If you prefer to run components individually:
 Provision the required GCS buckets and BigQuery datasets:
 
 ```bash
-make infra-init
+make infra-up
 ```
 
 **Step 2: Orchestration (Airflow)**
 
 Start the Airflow containers and access the UI at localhost:8080:
 ```bash
-make dev-up
+make docker-up
 ```
 * Note: Ensure the `google_cloud_default` connection is configured in the Airflow UI to point to your GCP project.
 
@@ -87,11 +86,13 @@ make dev-up
 
 **Step 3: Transformation (dbt)**
 
-Run the dbt models to transform raw landing data into production-ready metrics:
+Once raw data is available in BigQuery, run the dbt models to transform landing data into production-ready metrics:
 
 ```bash
-make dbt-build
+make dbt-run
 ```
+*Note: This command executes dbt deps and dbt run within the Airflow container to ensure proper permissions and dependencies.*
+
 **Data Quality & Maintenance**
 
 To ensure the pipeline remains healthy, use the built-in linting and cleaning tools:
