@@ -58,7 +58,7 @@ This project uses a Makefile to encapsulate complex commands, ensuring consisten
 The following commands handle the entire lifecycle of the pipeline:
 
 ```bash
-make infra-init
+make full-deploy
 ```
 It will run infra setup, starts Airflow, and triggers dbt. 
 
