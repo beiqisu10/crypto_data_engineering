@@ -19,8 +19,8 @@ default_args = {
     'start_date': datetime(2026, 2, 5),
     'email_on_failure': False,
     # Retry logic: Retries 2 times if a task fails due to transient issues
-    'retries': 1,
-    'retry_delay': timedelta(minutes=2),
+    'retries': 2,
+    'retry_delay': timedelta(minutes=5),
     'on_failure_callback': task_fail_slack_alert,
 }
 
@@ -31,7 +31,7 @@ with DAG(
     description='Download and process Binance data using Spark',
     schedule_interval='@daily',
     # catchup=True allows re-running historical data from the start_date
-    catchup=False,
+    catchup=True,
     max_active_runs=1,
     params={
         "symbol": "BTCUSDT",
@@ -46,7 +46,7 @@ with DAG(
         task_id='run_ingest_binance',
         bash_command="""
             python /opt/airflow/scripts/ingest_binance.py \
-            --date {{ macros.ds_add(ds, -2) }} \
+            --date {{ macros.ds_add(ds, -1) }} \
             --symbol {{ params.symbol }} \
             --output {{ params.data_dir }}
         """
@@ -56,8 +56,8 @@ with DAG(
     # This acts as the "Landing/Raw" zone in the Medallion Architecture.
     upload_to_gcs = LocalFilesystemToGCSOperator(
         task_id='upload_to_gcs',
-        src='/opt/airflow/scripts/data/{{ params.symbol }}_{{ macros.ds_add(ds, -2) }}.parquet/*',
-        dst='binance_raw/{{ params.symbol }}/{{ macros.ds_add(ds, -2) }}/',
+        src='/opt/airflow/scripts/data/{{ params.symbol }}_{{ macros.ds_add(ds, -1) }}.parquet/*',
+        dst='binance_raw/{{ params.symbol }}/{{ macros.ds_add(ds, -1) }}/',
         bucket='crypto-raw-data-lake',
         gcp_conn_id='google_cloud_default',
     )
@@ -68,7 +68,7 @@ with DAG(
     load_to_bq = GCSToBigQueryOperator(
         task_id='load_to_bq',
         bucket='crypto-raw-data-lake',
-        source_objects=['binance_raw/{{ params.symbol }}/{{ macros.ds_add(ds, -2) }}/*.parquet'],
+        source_objects=['binance_raw/{{ params.symbol }}/{{ macros.ds_add(ds, -1) }}/*.parquet'],
         destination_project_dataset_table='project-64505.binance_data.{{ params.symbol }}',
         source_format='PARQUET',
         write_disposition='WRITE_APPEND',

@@ -73,8 +73,8 @@ def get_most_recent_dag_run(logical_date, **kwargs):
 
 default_args = {
     'owner': 'sbq',
-    'retries': 1,
-    'retry_delay': timedelta(minutes=2),
+    'retries': 2,
+    'retry_delay': timedelta(minutes=5),
     'on_failure_callback': task_fail_slack_alert,
 }
 
@@ -82,7 +82,7 @@ default_args = {
 with DAG(
     'market_metadata_ingestion_v1',
     default_args=default_args,
-    start_date=datetime(2026, 3, 1),
+    start_date=datetime(2026, 2, 5),
     schedule_interval='@daily',
     catchup=False, 
     max_active_runs=1
