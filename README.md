@@ -53,17 +53,17 @@ This project uses a Makefile to encapsulate complex commands, ensuring consisten
 * **Docker & Docker-compose**: For the Airflow orchestration layer.
 * **Terraform**: For infrastructure as code.
 
-**Quick Start (Automated Workflow)**
+**🚀Quick Start (Automated Workflow)**
 
 The following commands handle the entire lifecycle of the pipeline:
 
 ```bash
 make infra-init
 ```
-It will run infra setup, starts Airflow, and triggers dbt. |
+It will run infra setup, starts Airflow, and triggers dbt. 
 
 
-**Step-by-Step Manual Execution**
+**🔧Step-by-Step Manual Execution**
 
 If you prefer to run components individually:
 
