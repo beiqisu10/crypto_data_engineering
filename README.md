@@ -57,12 +57,10 @@ This project uses a Makefile to encapsulate complex commands, ensuring consisten
 
 The following commands handle the entire lifecycle of the pipeline:
 
-| Command | Description |
-| :--- | :--- |
-| `make infra-init` | Initialize Terraform and provision GCS buckets/BigQuery datasets. |
-| `make dev-up` | Spin up the local Airflow environment via Docker Compose. |
-| `make dbt-build` | Install dbt dependencies, run all models, and execute data tests. |
-| `make full-deploy` | **One-click execution**: Runs infra setup, starts Airflow, and triggers dbt. |
+```bash
+make infra-init
+```
+It will run infra setup, starts Airflow, and triggers dbt. |
 
 
 **Step-by-Step Manual Execution**
