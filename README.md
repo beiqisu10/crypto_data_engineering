@@ -26,6 +26,8 @@ This project addresses the challenge of quantifying market psychology in the hig
 ---
 
 ### 3. Data Pipeline Architecture
+![dbt Lineage Graph](./images/architecture.png)
+
 The pipeline follows a **Medallion-style architecture**:
 
 * **Ingestion**: Python scripts fetch Binance Ticker data and Fear & Greed API data.
