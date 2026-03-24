@@ -78,13 +78,19 @@ make infra-up
 
 **Step 2: Orchestration (Airflow)**
 
-Start the Airflow containers and access the UI at localhost:8080:
-```bash
-make docker-up
-```
-* Note: Ensure the `google_cloud_default` connection is configured in the Airflow UI to point to your GCP project.
+* **Spin up the environment**: Run `make docker-up` to start the Airflow containers.
 
-* Note: The `market_metadata_ingestion_v1` DAG includes an `ExternalTaskSensor` to maintain strict data lineage with upstream Binance ingestion.
+* **Access the UI**: Go to localhost:8080 (Default: airflow/airflow).
+
+* **Configure Connection**: Ensure the google_cloud_default connection is configured with your GCP Project ID and Service Account JSON key.
+
+* **Manual Pipeline Execution**:
+
+  - Unpause & Trigger binance_spark_ingestion_v1: This fetches the core market data (Source of Truth).
+
+  - Unpause market_metadata_ingestion_v1: This DAG is downstream. It uses an ExternalTaskSensor to wait for the Binance ingestion to succeed before processing sentiment indices.
+
+Note: This decoupled design ensures strict Data Lineage and prevents the sentiment analysis from running on missing or stale price data.
 
 **Step 3: Transformation (dbt)**
 
