@@ -78,7 +78,10 @@ make infra-up
 
 **Step 2: Orchestration (Airflow)**
 
-* **Spin up the environment**: Run `make docker-up` to start the Airflow containers.
+* **Spin up the environment**: Start the Airflow containers.
+  ```bash
+  make docker-up
+  ```
 
 * **Access the UI**: Go to localhost:8080 (Default: airflow/airflow).
 
