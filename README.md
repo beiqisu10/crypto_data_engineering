@@ -15,6 +15,8 @@ This project addresses the challenge of quantifying market psychology in the hig
 
 * **Orchestration**: Apache Airflow (Workflow management)
 
+* **Processing Engine**: Apache Spark (PySpark for data cleaning and Parquet conversion)
+
 * **Data Lake**: Google Cloud Storage (GCS)
 
 * **Data Warehouse**: BigQuery (Partitioned and Clustered)
@@ -30,7 +32,7 @@ This project addresses the challenge of quantifying market psychology in the hig
 
 The pipeline follows a **Medallion-style architecture**:
 
-* **Ingestion**: Python scripts fetch Binance Ticker data and Fear & Greed API data.
+* **Ingestion**: A containerized **PySpark** job fetches Binance Ticker data and Fear & Greed API data.
 
 * **Landing**: Raw CSVs are uploaded to **GCS (Google Cloud Storage)** as the landing zone.
 
