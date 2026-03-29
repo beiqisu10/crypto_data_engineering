@@ -4,7 +4,7 @@
 
 with source as (
     select * from {{ source('binance_source', 'BTCUSDT') }}
-),
+)
 
 renamed as (
     select
